@@ -11,7 +11,11 @@ app.set('view engine', 'ejs');
 
 app.get('/', function(request, response) {
   //response.render('pages/index');
-  response.status(200).send('just some test response');
+  //response.status(200).send('just some test response');
+  if (request.query['hub.verify_token'] === 'test_token') {
+    response.send(request.query['hub.challenge'])
+  }
+  response.send('Error, wrong token')
 });
 
 app.listen(app.get('port'), function() {
