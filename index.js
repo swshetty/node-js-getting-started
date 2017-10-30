@@ -1,6 +1,9 @@
 var express = require('express');
 var app = express();
 
+const verifyToken = process.env.VERIFY_TOKEN;
+
+
 app.set('port', (process.env.PORT || 5000));
 
 app.use(express.static(__dirname + '/public'));
@@ -9,13 +12,16 @@ app.use(express.static(__dirname + '/public'));
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
-app.get('/', function(request, response) {
-  //response.render('pages/index');
-  //response.status(200).send('just some test response');
-  if (request.query['hub.verify_token'] === 'test_token') {
-    response.send(request.query['hub.challenge'])
+// Index route
+app.get('/', function (req, res) {
+  res.send('Hello world, I am a chat bot')
+})
+
+app.get('/webhook/', function(req, res) {
+  if (req.query['hub.verify_token'] === verifyToken) {
+    res.send(req.query['hub.challenge'])
   }
-  response.send('Error, wrong token')
+  res.send('Error, wrong token')
 });
 
 app.listen(app.get('port'), function() {
